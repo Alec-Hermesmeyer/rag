@@ -19,8 +19,8 @@ app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://your-frontend-domain.com",
-        "http://localhost:3000"  # For development
+        "https://ai-voice-demo.vercel.app",
+        "http://localhost:3001"  # For development
     ],
     allow_credentials=True,
     allow_methods=["*"],
