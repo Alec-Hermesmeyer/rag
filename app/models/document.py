@@ -1,20 +1,19 @@
 from pydantic import BaseModel
-from typing import Dict, Any, Optional
+from typing import List, Optional, Dict
 
 class DocumentCreate(BaseModel):
     content: str
-    metadata: Optional[Dict[str, Any]] = {}
+    metadata: Optional[Dict] = None
 
 class Document(BaseModel):
     id: str
     content: str
-    metadata: Dict[str, Any]
-    score: Optional[float] = None
+    metadata: Optional[Dict] = None
 
 class SearchQuery(BaseModel):
     query: str
-    limit: Optional[int] = 5
+    limit: Optional[int] = 10
 
 class SearchResponse(BaseModel):
-    results: list[Document]
+    results: List[Document]
     total: int

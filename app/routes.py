@@ -1,12 +1,12 @@
 from fastapi import APIRouter, Depends
-from .services.document_service import DocumentService
-from .models.document import DocumentCreate, Document, SearchQuery, SearchResponse
+from app.services.document_service import DocumentService
+from app.models.document import DocumentCreate, Document, SearchQuery, SearchResponse
 
 router = APIRouter()
 
 def get_document_service():
     # In a real app, you'd get this from a dependency injection container
-    from .main import document_service
+    from app.main import document_service
     return document_service
 
 @router.post("/documents", response_model=Document)
