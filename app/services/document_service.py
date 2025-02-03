@@ -1,32 +1,17 @@
-from typing import List
-from app.models.document import Document, DocumentCreate
-import uuid
+from qdrant_client import QdrantClient
+from qdrant_client.http.models import Distance, VectorParams
 
 class DocumentService:
-    def __init__(self):
-        self.documents = {}  # In-memory storage for demo purposes
+    def __init__(self, qdrant_client: QdrantClient):
+        self.client = qdrant_client
+        self.collection_name = "documents"
+        self._ensure_collection()
 
-    async def create_document(self, doc: DocumentCreate) -> Document:
-        doc_id = str(uuid.uuid4())
-        document = Document(
-            id=doc_id,
-            content=doc.content,
-            metadata=doc.metadata
-        )
-        self.documents[doc_id] = document
-        return document
-
-    async def delete_document(self, doc_id: str):
-        if doc_id in self.documents:
-            del self.documents[doc_id]
-
-    async def search_documents(self, query: str, limit: int = 10) -> List[Document]:
-        # Simple search implementation for demo purposes
-        # In a real app, you'd want to use a proper search engine
-        results = []
-        for doc in self.documents.values():
-            if query.lower() in doc.content.lower():
-                results.append(doc)
-                if len(results) >= limit:
-                    break
-        return results
+    def _ensure_collection(self):
+        """Ensure the collection exists"""
+        collections = self.client.get_collections().collections
+        if not any(c.name == self.collection_name for c in collections):
+            self.client.create_collection(
+                collection_name=self.collection_name,
+                vectors_config=VectorParams(size=1536, distance=Distance.COSINE)
+            )
